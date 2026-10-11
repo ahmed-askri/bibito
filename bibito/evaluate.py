@@ -7,6 +7,8 @@ import vizdoom as vzd
 
 from bibito.state import make_actions, state_from_game
 
+FRAME_SKIP = 4  # the agent decides once every FRAME_SKIP game tics
+
 
 def percentile(values, q):
     """Nearest-rank percentile."""
@@ -40,7 +42,9 @@ def make_game(scenario="basic.cfg", visible=False):
     return game
 
 
-def run_episodes(policy, n_episodes=50, seed0=1000, scenario="basic.cfg", visible=False):
+def run_episodes(policy, n_episodes=50, seed0=1000, scenario="basic.cfg", visible=False,
+                 frame_skip=FRAME_SKIP, log=None):
+    """log(i_done, n_total, episode_dict) is called after each episode, if given."""
     game = make_game(scenario, visible)
     names, vectors = make_actions([b.name for b in game.get_available_buttons()])
     index = {n: i for i, n in enumerate(names)}
@@ -57,13 +61,15 @@ def run_episodes(policy, n_episodes=50, seed0=1000, scenario="basic.cfg", visibl
             t0 = time.perf_counter()
             action = policy(s)
             latencies.append((time.perf_counter() - t0) * 1000)
-            game.make_action(vectors[index[action]])
-        ep_time = game.get_episode_time()
+            game.make_action(vectors[index[action]], frame_skip)
+        tics = len(latencies) * frame_skip  # get_episode_time() reads 0 after a kill, so we count ourselves
         episodes.append({
             "reward": game.get_total_reward(),
-            "steps": ep_time,
-            "killed": ep_time < timeout,  # episode ended before the timeout = monster died
+            "steps": tics,  # game tics
+            "killed": tics < timeout,  # episode ended before the timeout = monster died
             "latencies_ms": latencies,
         })
+        if log:
+            log(i + 1, n_episodes, episodes[-1])
     game.close()
     return episodes
