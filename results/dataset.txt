@@ -1,7 +1,7 @@
-train: 300 episodes, 1220 rows
-  actions: ATTACK 627 (51%), MOVE_LEFT 282 (23%), MOVE_RIGHT 311 (25%)
+train: 1500 episodes, 6068 rows
+  actions: ATTACK 3097 (51%), MOVE_LEFT 1471 (24%), MOVE_RIGHT 1500 (25%)
   majority-class baseline: 51%
-  rows near the teacher's threshold (4 <= |angle| <= 6): 414 (34%)
+  rows near the teacher's threshold (4 <= |angle| <= 6): 2064 (34%)
 val: 100 episodes, 370 rows
   actions: ATTACK 203 (55%), MOVE_LEFT 96 (26%), MOVE_RIGHT 71 (19%)
   majority-class baseline: 55%
