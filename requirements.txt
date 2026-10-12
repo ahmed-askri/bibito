@@ -2,3 +2,4 @@ vizdoom
 pytest
 openai
 python-dotenv
+torch

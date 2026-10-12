@@ -1,0 +1,5 @@
+best val agreement with teacher: 100.0% (370 validation rows)
+  MOVE_LEFT: 100.0% of 96 rows
+  MOVE_RIGHT: 100.0% of 71 rows
+  ATTACK: 100.0% of 203 rows
+near the threshold (4 <= |angle| <= 6): 100.0% of 144 rows

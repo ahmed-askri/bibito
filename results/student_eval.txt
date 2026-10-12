@@ -1,0 +1,2 @@
+scripted_t5 (teacher)  reward 87.7 +/- 10, kill 100%, tics 15.2, latency p50 0.003 ms p95 0.004 ms
+student                reward 87.7 +/- 10, kill 100%, tics 15.2, latency p50 0.274 ms p95 0.582 ms
