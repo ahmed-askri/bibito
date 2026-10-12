@@ -1,0 +1,4 @@
+vizdoom
+pytest
+openai
+python-dotenv

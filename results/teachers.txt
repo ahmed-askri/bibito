@@ -1,0 +1,8 @@
+episodes=5, seeds from 2000, frame_skip=4, real-time budget = 114 ms per decision
+scripted_t5: reward 84.6 +/- 14, kill 100%, tics 18.4, latency p50 0.0 ms p95 0.0 ms, over budget: 0%
+model: openai/gpt-oss-20b
+llm: reward 71.0 +/- 23, kill 100%, tics 31.2, latency p50 331.7 ms p95 2515.3 ms, over budget: 100%
+calls=39 retries=9 invalid_replies=0 failures=0
+retry reasons: {'RateLimitError': 9}
+tokens per decision: in 249, out 38
+estimated cost per 1000 decisions: $0.0300 (prices: in 0.075, out 0.30 USD per 1M tokens)
