@@ -1,0 +1,10 @@
+scenario: defend_the_center; 9547 unseen validation rows; student-only accuracy 96.48%
+confidence = raw softmax (no calibration); LLM latency p50 2422 ms per escalated call (includes rate-limit waits)
+
+  k escalated   share   conf<=   router acc   student on those   LLM on those   extra latency/decision   cost per 1000 decisions
+            0   0.00%    -        96.48%                -              -                0.0 ms        $0.0000
+           25   0.26%  0.476      96.46%              36.0%          28.0%              6.3 ms        $0.0001
+           50   0.52%  0.511      96.47%              44.0%          42.0%             12.7 ms        $0.0003
+          100   1.05%  0.535      96.35%              51.0%          39.0%             25.4 ms        $0.0006
+          200   2.09%  0.594      96.32%              53.0%          45.5%             50.7 ms        $0.0011
+          300   3.14%  0.660      96.00%              58.7%          43.3%             76.1 ms        $0.0017

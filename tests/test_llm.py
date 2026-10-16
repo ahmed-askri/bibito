@@ -1,6 +1,6 @@
 import json
 from types import SimpleNamespace
-
+from bibito.llm import build_system_prompt
 import pytest
 
 from bibito.llm import LLMPolicy, LLMStats, cost_usd, parse_action
@@ -99,3 +99,23 @@ def test_retry_reasons_are_counted_by_error_type():
     p, _, _ = make([Boom(), Boom(), "ATTACK"])
     p(STATE)
     assert dict(p.stats.retry_reasons) == {"Boom": 2}
+
+def test_parse_action_with_other_scenario_actions():
+    acts = ["TURN_LEFT", "TURN_RIGHT", "ATTACK"]
+    assert parse_action("turn left", acts) == "TURN_LEFT"
+    assert parse_action("TURN_RIGHT", acts) == "TURN_RIGHT"
+    assert parse_action("MOVE_LEFT", acts) is None
+
+
+def test_system_prompt_lists_the_scenario_actions():
+    prompt = build_system_prompt("defend_the_center")
+    assert "TURN_LEFT, TURN_RIGHT or ATTACK" in prompt
+    assert "MOVE_LEFT" not in prompt
+    assert "MOVE_LEFT, MOVE_RIGHT or ATTACK" in build_system_prompt("basic")
+
+
+def test_policy_uses_the_scenario_prompt_and_actions():
+    client = FakeClient(["TURN_LEFT"])
+    policy = LLMPolicy(client, "fake", retry_on=(Boom,), sleep=lambda s: None, scenario="defend_the_center")
+    assert policy(STATE) == "TURN_LEFT"
+    assert "TURN_LEFT" in client.calls[0]["messages"][0]["content"]

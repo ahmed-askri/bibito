@@ -1,0 +1,25 @@
+30 games, teacher scripted t5, seeds from 2000
+seed  tics  kills  shots  ammo_left  ammo_out_tic  health_last  enemies_last
+2000  1268     17     26          0          1092  10.0  5
+2001  1188     16     26          0           864  12.0  5
+2002  1268     17     26          0          1092  10.0  5
+2003  1196     17     26          0           972  6.0  5
+2004  1268     17     26          0          1092  10.0  5
+2005  1216     16     26          0           788  12.0  5
+2006  1160     17     26          0           948  36.0  5
+2007  1268     17     26          0          1092  10.0  5
+2008  1028     15     26          0           856  8.0  5
+2009  1356     18     26          0          1008  2.0  5
+2010   832     10     18          8          None  8.0  3
+2011  1268     17     26          0          1092  10.0  5
+2012  1764     20     26          0          1364  2.0  5
+2013  1268     17     26          0          1092  10.0  5
+2014  1264     17     26          0           896  12.0  5
+
+mean tics survived: 1162   mean kills: 15.6
+games where ammo reached 0 before death: 26/30
+  mean tic when ammo ran out: 1011
+  mean kills when ammo ran out: 18.0
+  mean tics from ammo-out to death: 238
+mean shots fired: 24.0   mean shots per kill: 1.55
+mean ammo left at death: 2.0

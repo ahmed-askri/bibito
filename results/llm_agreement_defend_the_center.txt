@@ -1,0 +1,10 @@
+scenario: defend_the_center, model: openai/gpt-oss-20b, 100 unseen validation rows (half contested)
+agreement with teacher   student 95.0%   llm 56.0%
+  contested rows (50)   student 90.0%   llm 56.0%
+  other rows (50)       student 100.0%   llm 56.0%
+rows where the student is wrong: 5; the LLM is right on 60.0% of them
+rows where the LLM is wrong: 44; the student is right on 95.5% of them
+llm latency per decision (includes retry waits): p50 1182 ms, p95 6783 ms (budget 114 ms)
+calls=100 retries=79 invalid_replies=0 failures=0 retry reasons: {'RateLimitError': 79}
+tokens per decision: in 356, out 84
+estimated cost per 1000 decisions: $0.0518

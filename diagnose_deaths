@@ -1,0 +1,75 @@
+import os
+import statistics
+import sys
+
+from bibito.evaluate import FRAME_SKIP, make_game
+from bibito.policies import make_scripted_policy
+from bibito.scenarios import get_scenario
+from bibito.state import make_actions, state_from_game
+
+SCENARIO = "defend_the_center"
+N = int(sys.argv[1]) if len(sys.argv) > 1 else 30
+SEED0 = 2000
+
+sc = get_scenario(SCENARIO)
+game = make_game(sc)
+names, vectors = make_actions([b.name for b in game.get_available_buttons()])
+index = {n: i for i, n in enumerate(names)}
+policy = make_scripted_policy(5, SCENARIO)
+
+games = []
+for i in range(N):
+    game.set_seed(SEED0 + i)
+    game.new_episode()
+    decisions = 0
+    ammo0 = None
+    ammo_out_tic = None
+    kills_at_ammo_out = None
+    last = None
+    while not game.is_episode_finished():
+        s = state_from_game(game, game.get_state(), sc.enemies)
+        if ammo0 is None:
+            ammo0 = s["ammo"]
+        tic = decisions * FRAME_SKIP
+        if ammo_out_tic is None and s["ammo"] <= 0:
+            ammo_out_tic = tic
+            kills_at_ammo_out = game.get_total_reward()
+        last = s
+        game.make_action(vectors[index[policy(s)]], FRAME_SKIP)
+        decisions += 1
+    kills = game.get_total_reward()
+    games.append({
+        "seed": SEED0 + i, "tics": decisions * FRAME_SKIP, "kills": kills,
+        "ammo_left": last["ammo"], "shots": ammo0 - last["ammo"],
+        "ammo_out_tic": ammo_out_tic, "kills_at_ammo_out": kills_at_ammo_out,
+        "health_last": last.get("health"), "enemies_last": len(last["enemies"]),
+    })
+    print(f">> {i + 1}/{N}", flush=True)
+game.close()
+
+
+def mean(values):
+    values = [v for v in values if v is not None]
+    return statistics.mean(values) if values else float("nan")
+
+
+out_of_ammo = [g for g in games if g["ammo_out_tic"] is not None]
+lines = [f"{N} games, teacher scripted t5, seeds from {SEED0}", "seed  tics  kills  shots  ammo_left  ammo_out_tic  health_last  enemies_last"]
+for g in games[:15]:
+    lines.append(f"{g['seed']}  {g['tics']:4d}  {g['kills']:5.0f}  {g['shots']:5.0f}  {g['ammo_left']:9.0f}  "
+                 f"{str(g['ammo_out_tic']):>12}  {g['health_last']}  {g['enemies_last']}")
+lines += [
+    "",
+    f"mean tics survived: {mean([g['tics'] for g in games]):.0f}   mean kills: {mean([g['kills'] for g in games]):.1f}",
+    f"games where ammo reached 0 before death: {len(out_of_ammo)}/{N}",
+    f"  mean tic when ammo ran out: {mean([g['ammo_out_tic'] for g in out_of_ammo]):.0f}",
+    f"  mean kills when ammo ran out: {mean([g['kills_at_ammo_out'] for g in out_of_ammo]):.1f}",
+    f"  mean tics from ammo-out to death: {mean([g['tics'] - g['ammo_out_tic'] for g in out_of_ammo]):.0f}",
+    f"mean shots fired: {mean([g['shots'] for g in games]):.1f}   mean shots per kill: "
+    f"{mean([g['shots'] / g['kills'] for g in games if g['kills'] > 0]):.2f}",
+    f"mean ammo left at death: {mean([g['ammo_left'] for g in games]):.1f}",
+]
+print("\n".join(lines), flush=True)
+os.makedirs("results", exist_ok=True)
+with open("results/death_diagnosis.txt", "w") as f:
+    f.write("\n".join(lines) + "\n")

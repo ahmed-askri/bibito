@@ -1,0 +1,6 @@
+train: 200 games, 101 distinct; 52968 rows, 19137 distinct states
+val:   100 games, 45 distinct; 28443 rows
+val games identical to a train game: 56/100
+val rows whose exact state is in train: 18896 (66.4%)
+student agreement on SEEN val rows:   100.0% (18896 rows)
+student agreement on UNSEEN val rows: 96.5% (9547 rows)
