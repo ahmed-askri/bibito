@@ -5,6 +5,7 @@ import time
 
 import vizdoom as vzd
 
+from bibito.scenarios import get_scenario
 from bibito.state import make_actions, state_from_game
 
 FRAME_SKIP = 4  # the agent decides once every FRAME_SKIP game tics
@@ -25,28 +26,34 @@ def summarize(episodes):
         "reward_mean": statistics.mean(rewards),
         "reward_std": statistics.stdev(rewards) if len(rewards) > 1 else 0.0,
         "kill_rate": sum(e["killed"] for e in episodes) / len(episodes),
+        "death_rate": sum(e.get("died", False) for e in episodes) / len(episodes),
         "steps_mean": statistics.mean(e["steps"] for e in episodes),
         "latency_p50_ms": percentile(lat, 50),
         "latency_p95_ms": percentile(lat, 95),
     }
 
 
-def make_game(scenario="basic.cfg", visible=False):
+def make_game(sc, visible=False):
     game = vzd.DoomGame()
-    game.load_config(os.path.join(vzd.scenarios_path, scenario))
+    game.load_config(os.path.join(vzd.scenarios_path, sc.cfg))
     game.set_window_visible(visible)
     game.set_objects_info_enabled(True)
-    for v in (vzd.GameVariable.POSITION_X, vzd.GameVariable.POSITION_Y, vzd.GameVariable.ANGLE):
-        game.add_available_game_variable(v)
+    have = list(game.get_available_game_variables())
+    for v in (vzd.GameVariable.POSITION_X, vzd.GameVariable.POSITION_Y,
+              vzd.GameVariable.ANGLE, vzd.GameVariable.HEALTH):
+        if v not in have:
+            game.add_available_game_variable(v)
     game.init()
     return game
 
 
-def run_episodes(policy, n_episodes=50, seed0=1000, scenario="basic.cfg", visible=False,
+def run_episodes(policy, n_episodes=50, seed0=1000, scenario="basic", visible=False,
                  frame_skip=FRAME_SKIP, log=None):
     """log(i_done, n_total, episode_dict) is called after each episode, if given."""
-    game = make_game(scenario, visible)
+    sc = get_scenario(scenario)
+    game = make_game(sc, visible)
     names, vectors = make_actions([b.name for b in game.get_available_buttons()])
+    assert tuple(names) == sc.actions, f"game buttons {names} differ from the scenario config {sc.actions}"
     index = {n: i for i, n in enumerate(names)}
     timeout = game.get_episode_timeout()
     assert timeout > 0, "this scenario has no timeout; 'killed' detection needs one"
@@ -57,16 +64,17 @@ def run_episodes(policy, n_episodes=50, seed0=1000, scenario="basic.cfg", visibl
         game.new_episode()
         latencies = []
         while not game.is_episode_finished():
-            s = state_from_game(game, game.get_state())
+            s = state_from_game(game, game.get_state(), sc.enemies)
             t0 = time.perf_counter()
             action = policy(s)
             latencies.append((time.perf_counter() - t0) * 1000)
             game.make_action(vectors[index[action]], frame_skip)
-        tics = len(latencies) * frame_skip  # get_episode_time() reads 0 after a kill, so we count ourselves
+        tics = len(latencies) * frame_skip  # get_episode_time() reads 0 after the episode ends early
         episodes.append({
-            "reward": game.get_total_reward(),
-            "steps": tics,  # game tics
-            "killed": tics < timeout,  # episode ended before the timeout = monster died
+            "reward": game.get_total_reward(),  # basic: points; defend_the_center: number of kills
+            "steps": tics,  # game tics survived
+            "killed": tics < timeout,  # episode ended before the timeout (basic: monster died)
+            "died": game.is_player_dead(),
             "latencies_ms": latencies,
         })
         if log:

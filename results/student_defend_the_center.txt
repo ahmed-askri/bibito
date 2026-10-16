@@ -1,0 +1,7 @@
+scenario: defend_the_center
+best val agreement with teacher: 98.8% (28443 validation rows)
+  TURN_LEFT: 98.8% of 11111 rows
+  TURN_RIGHT: 99.3% of 8845 rows
+  ATTACK: 98.4% of 8487 rows
+  near the threshold: 97.8% of 7421 rows
+  contested (several enemies at similar distance): 96.9% of 7204 rows

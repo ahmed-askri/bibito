@@ -1,0 +1,3 @@
+scenario: defend_the_center, 30 games, seeds from 2000
+scripted_t5 (teacher)  reward 15.6 +/- 3.8, died 100%, tics 1162, latency p50 0.011 ms p95 0.017 ms
+student                reward 16.2 +/- 3.7, died 100%, tics 1185, latency p50 0.543 ms p95 0.711 ms

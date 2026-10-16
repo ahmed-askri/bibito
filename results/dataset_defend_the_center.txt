@@ -1,0 +1,11 @@
+scenario: defend_the_center, teacher: scripted t5
+train: 200 episodes, 52968 rows
+  actions: ATTACK 15543 (29%), TURN_LEFT 20317 (38%), TURN_RIGHT 17108 (32%)
+  majority-class baseline: 38%
+  rows near the threshold (target within 5+-2 degrees): 13507 (26%)
+  rows with several enemies at similar distance (contested): 13617 (26%)
+val: 100 episodes, 28443 rows
+  actions: ATTACK 8487 (30%), TURN_LEFT 11111 (39%), TURN_RIGHT 8845 (31%)
+  majority-class baseline: 39%
+  rows near the threshold (target within 5+-2 degrees): 7421 (26%)
+  rows with several enemies at similar distance (contested): 7204 (25%)

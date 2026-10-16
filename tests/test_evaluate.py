@@ -21,3 +21,10 @@ def test_summarize():
     assert s["kill_rate"] == pytest.approx(2 / 3)
     assert s["steps_mean"] == pytest.approx(120)
     assert s["latency_p50_ms"] == 2.0
+
+def test_summarize_death_rate():
+    eps = [
+        {"reward": 3, "steps": 400, "killed": True, "died": True, "latencies_ms": [1.0]},
+        {"reward": 5, "steps": 2100, "killed": False, "died": False, "latencies_ms": [1.0]},
+    ]
+    assert summarize(eps)["death_rate"] == pytest.approx(0.5)

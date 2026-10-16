@@ -1,0 +1,9 @@
+scenario=defend_the_center episodes=30 seeds from 2000 frame_skip=4
+policy                  reward   died%    tics   p50ms   p95ms
+random               0.1+/-0.8     100%     301   0.003   0.005
+always_attack        0.2+/-0.5     100%     292   0.001   0.001
+scripted_t3         12.5+/-5.1     100%     933   0.005   0.008
+scripted_t5         15.6+/-3.8     100%    1162   0.005   0.008
+scripted_t8         12.7+/-1.5     100%     925   0.005   0.008
+scripted_t12         8.5+/-2.1     100%     763   0.005   0.008
+scripted_t20         5.4+/-1.5     100%     594   0.005   0.008
