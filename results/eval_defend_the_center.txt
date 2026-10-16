@@ -1,0 +1,5 @@
+scenario: defend_the_center, validation seeds 2000..2099, 100 games, frame_skip 4, student file hash b57530fc4765
+teacher_t5  kills 15.2 (95% CI 14.3..16.1, std 4.6), died 100%, tics 1138, latency p50 0.004 ms p95 0.007 ms, distinct (kills,tics) results 44/100
+student     kills 15.7 (95% CI 14.8..16.4, std 4.3), died 100%, tics 1164, latency p50 0.185 ms p95 0.343 ms, distinct (kills,tics) results 44/100
+student - teacher (same games, paired): +0.43 kills (95% CI -0.01..+0.91); the CI contains 0: no measurable difference
+note: seeds do not give independent games here, so the real sample is smaller than N; treat the CI as optimistic.
