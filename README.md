@@ -1,8 +1,9 @@
 <div align="center">
 
-# Bibito
-
-**A fast decision model for a DOOM agent, with an LLM as slow backup**
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/banner-dark.png">
+  <img src="docs/banner-light.png" alt="Bibito: a fast decision model for a DOOM agent, with an LLM as slow backup" width="860">
+</picture>
 
 A tiny neural network learns from a slower decision-maker and answers in about 0.1 ms.
 Built and measured on ViZDoom (`defend_the_center`).
