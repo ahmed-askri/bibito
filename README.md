@@ -45,6 +45,15 @@ Every number in this repository was measured here, on held-out seeds, with confi
 - **Complete experiment loop.** Teacher, dataset, student, DAgger, LLM comparison and a confidence router,
   each measured on its own.
 
+## Demo
+
+<p align="center">
+  <img src="docs/demo.gif" alt="The Bibito student playing defend_the_center: the action chosen at each decision and the kill count are shown at the top" width="560">
+</p>
+
+<p align="center"><sub>The student (a 14-input MLP) playing the first 10 seconds of validation game seed 2000.
+The bar shows the action it chooses at every decision and the running kill count.</sub></p>
+
 ## How it works
 
 ```mermaid
