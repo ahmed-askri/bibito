@@ -19,7 +19,8 @@ SEED0 = 9000 if FINAL else 2000  # final = test seeds 9000-9099, touch only for 
 if FINAL and N > 100:
     raise SystemExit("test seeds are 9000-9099: N must be <= 100")
 
-MODEL_PATH = f"models/student_{SCENARIO}.pt"
+MODEL_TAG = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--model=")), "")
+MODEL_PATH = f"models/student_{SCENARIO}{MODEL_TAG}.pt"
 model, scenario = load_model(MODEL_PATH)
 players = {
     "teacher_t5": make_scripted_policy(5, SCENARIO),
@@ -76,7 +77,7 @@ lines.append("note: seeds do not give independent games here, so the real sample
 print("\n".join(lines[-2:]), flush=True)
 
 os.makedirs("results", exist_ok=True)
-out = f"results/eval_{SCENARIO}{'_final' if FINAL else ''}.txt"
+out = f"results/eval_{SCENARIO}{MODEL_TAG}{'_final' if FINAL else ''}.txt"
 with open(out, "w") as f:
     f.write("\n".join(lines) + "\n")
 print(f"saved {out}", flush=True)
